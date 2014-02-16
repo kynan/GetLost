@@ -70,6 +70,8 @@ def get_ranking_array(coords):
     for start_coord, end_coord in zip(coords[:-1], coords[1:]):
         indexes.append(get_nearby(start_coord, end_coord, dist_meters=300))
         points.extend(get_points(start_coord, end_coord, 1e-5))
+    if not indexes:
+        return [], 1.0
     sub = fs_df[reduce(lambda a, b: a | b, indexes)]
 
     hip_rank = get_hip_rank(points, sub)
