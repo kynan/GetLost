@@ -31,4 +31,5 @@ def route(from_lat, from_lng, to_lat, to_lng):
                    total_rank=log(total_rank))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=environ.get('FLASK_DEBUG', False))
+    app.run(host='0.0.0.0', port=int(environ.get('PORT', 5000)),
+            debug=environ.get('FLASK_DEBUG', False))
