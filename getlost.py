@@ -1,6 +1,6 @@
 from os import environ
 from urllib2 import urlopen
-from math import log
+from math import log, sqrt
 
 from flask import Flask, json, jsonify
 app = Flask(__name__)
@@ -24,6 +24,8 @@ def route(from_lat, from_lng, to_lat, to_lng):
               for leg in route['route']['legs']
               for man in leg['maneuvers']]
     hip_rank, total_rank = get_ranking_array(coords)
+    total_rank /= sqrt((float(to_lng) - float(from_lng))**2 +
+                       (float(to_lat) - float(from_lat))**2)
     return jsonify(route=route,
                    hip_rank=list(hip_rank),
                    total_rank=log(total_rank))
