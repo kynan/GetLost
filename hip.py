@@ -56,6 +56,8 @@ def get_points(start, end, stride):
 
 def get_hip_rank(points, sub):
     sub_coords = sub[['lat', 'lng']].values
+    if not sub_coords.shape:
+        return []
     sub_scores = sub.checkinsCount.apply(int).values
     kdt = KDTree(sub_coords, metric='euclidean')
     d, i = kdt.query(np.array(points), k=10)
