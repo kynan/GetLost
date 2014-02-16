@@ -26,4 +26,4 @@ def route(from_lat, from_lng, to_lat, to_lng):
     return jsonify(route=route, hip_rank=list(hip_rank), total_rank=total_rank)
 
 if __name__ == "__main__":
-    app.run(debug=environ.get('FLASK_DEBUG', False))
+    app.run(host='0.0.0.0', debug=environ.get('FLASK_DEBUG', False))
