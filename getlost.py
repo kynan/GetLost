@@ -1,10 +1,24 @@
-from flask import Flask
+from os import environ
+from urllib2 import urlopen
+
+from flask import Flask, json, make_response
 app = Flask(__name__)
 
+url = 'http://open.mapquestapi.com/directions/v2/route'
+params = '?key={apikey}&ambiguities=ignore&routeType=pedestrian'
+rel = url + params + '&from={flat},{flng}&to={tlat},{tlng}'
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+
+@app.route("/route/<from_lat>,<from_lng>/<to_lat>,<to_lng>")
+def get_coords(from_lat, from_lng, to_lat, to_lng):
+    resp = urlopen(rel.format(apikey=environ['MAPQUEST_API_KEY'],
+                   flat=from_lat, flng=from_lng, tlat=to_lat, tlng=to_lng))
+
+    resp_dict = json.loads(resp.read().decode("utf-8"))
+    res = [(man['startPoint']['lat'], man['startPoint']['lng'])
+           for leg in resp_dict['route']['legs']
+           for man in leg['maneuvers']]
+    return make_response(json.dumps(res))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=environ.get('FLASK_DEBUG', False))
