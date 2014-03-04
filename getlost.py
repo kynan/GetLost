@@ -2,7 +2,8 @@ from os import environ
 from urllib2 import urlopen
 from math import log, sqrt
 
-from flask import Flask, json, jsonify
+from flask import Flask, Markup, json, jsonify, render_template
+from markdown import markdown
 app = Flask(__name__)
 
 from hip import get_ranking_array
@@ -11,6 +12,13 @@ from utils import jsonp
 url = 'http://open.mapquestapi.com/directions/v2/route'
 params = '?key={apikey}&ambiguities=ignore&routeType=pedestrian'
 rel = url + params + '&from={flat},{flng}&to={tlat},{tlng}'
+
+
+@app.route("/")
+def landing():
+    with open("README.md") as f:
+        content = Markup(markdown(f.read()))
+    return render_template('landing.html', **locals())
 
 
 @app.route("/route/<from_lat>,<from_lng>/<to_lat>,<to_lng>")
